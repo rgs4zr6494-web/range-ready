@@ -3,294 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morning Flexibility — Range Ready</title>
+<title>🏌️ Morning Flexibility — Range Ready</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #0f1a0f;
-    color: #e8f5e9;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+html, body {
+  height: 100%;
+  overflow: hidden;        /* lock the viewport — no scroll on TV */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #0d1a0d;
+  color: #e8f5e9;
+}
 
-  /* ── TOP BAR ── */
-  #topbar {
-    background: #1a2e1a;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid #2e5c2e;
-    flex-shrink: 0;
-  }
-  #topbar h1 { font-size: 1.1rem; color: #a5d6a7; font-weight: 600; }
-  #topbar .subtitle { font-size: 0.75rem; color: #6a9e6a; margin-top: 2px; }
+/* ── TOP BAR ── */
+#topbar {
+  background: #1a2e1a;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 2px solid #66bb6a;
+  flex-shrink: 0;
+  height: 52px;
+}
+#topbar .home-link {
+  font-size: 0.78rem; color: #66bb6a; text-decoration: none;
+  white-space: nowrap; flex-shrink: 0;
+}
+#topbar .home-link:hover { color: #a5d6a7; }
+#topbar-title {
+  font-size: 1rem; font-weight: 700; color: #a5d6a7;
+  flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#topbar-meta {
+  font-size: 0.72rem; color: #5a8a5a; white-space: nowrap; flex-shrink: 0;
+}
+#topbar-counter {
+  font-size: 0.85rem; font-weight: 700; color: #66bb6a;
+  white-space: nowrap; flex-shrink: 0;
+}
 
-  /* ── PROGRESS BAR ── */
-  #progress-wrap {
-    background: #1a2e1a;
-    padding: 8px 20px 12px;
-    border-bottom: 1px solid #2a3e2a;
-    flex-shrink: 0;
-  }
-  #progress-label {
-    font-size: 0.72rem;
-    color: #6a9e6a;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-  }
-  #progress-bar-bg {
-    background: #2a3e2a;
-    border-radius: 10px;
-    height: 8px;
-    overflow: hidden;
-  }
-  #progress-bar-fill {
-    background: linear-gradient(90deg, #2e7d32, #66bb6a);
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.5s ease;
-  }
+/* ── PROGRESS BAR ── */
+#progress-wrap {
+  background: #1a2e1a; padding: 4px 16px 6px;
+  border-bottom: 1px solid #2a3e2a; flex-shrink: 0;
+}
+#progress-bar-bg {
+  background: #2a3e2a; border-radius: 6px; height: 6px; overflow: hidden;
+}
+#progress-bar-fill {
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  height: 100%; border-radius: 6px; transition: width 0.4s ease;
+}
 
-  /* ── MAIN LAYOUT ── */
-  #main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
-  }
+/* ── PAGE WRAPPER ── */
+#page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-  /* ── SIDEBAR ── */
-  #sidebar {
-    width: 260px;
-    min-width: 260px;
-    background: #141f14;
-    overflow-y: auto;
-    border-right: 1px solid #2a3a2a;
-    flex-shrink: 0;
-  }
-  #sidebar::-webkit-scrollbar { width: 4px; }
-  #sidebar::-webkit-scrollbar-track { background: #141f14; }
-  #sidebar::-webkit-scrollbar-thumb { background: #2e5c2e; border-radius: 4px; }
+/* ── MAIN ── */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
 
-  .section-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #66bb6a;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 10px 14px 4px;
-    background: #1a2a1a;
-    border-top: 1px solid #2a3a2a;
-  }
+/* ── SIDEBAR ── */
+#sidebar {
+  width: 210px;
+  min-width: 210px;
+  background: #111b11;
+  overflow-y: auto;
+  border-right: 1px solid #2a3a2a;
+  flex-shrink: 0;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-track { background: #111b11; }
+#sidebar::-webkit-scrollbar-thumb { background: #2e5c2e; border-radius: 4px; }
 
-  .ex-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 14px;
-    cursor: pointer;
-    border-bottom: 1px solid #1e2e1e;
-    transition: background 0.15s;
-    gap: 10px;
-  }
-  .ex-item:hover { background: #1e3020; }
-  .ex-item.active { background: #1e4020; border-left: 3px solid #66bb6a; }
-  .ex-item.done .ex-num { background: #2e7d32; color: #fff; }
-  .ex-item.done .ex-name { color: #6a9e6a; text-decoration: line-through; }
+.section-label {
+  font-size: 0.58rem; font-weight: 700; color: #66bb6a;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 8px 10px 3px; background: #182818;
+  border-top: 1px solid #2a3a2a; border-bottom: 1px solid #1e2e1e;
+}
+.ex-item {
+  display: flex; align-items: center;
+  padding: 6px 10px; cursor: pointer;
+  border-bottom: 1px solid #1a2a1a;
+  transition: background 0.15s; gap: 8px;
+}
+.ex-item:hover { background: #1e3020; }
+.ex-item.active { background: #1b3e1b; border-left: 3px solid #66bb6a; }
+.ex-item.done { opacity: 0.55; }
+.ex-num {
+  font-size: 0.6rem; color: #4a6a4a; width: 16px;
+  flex-shrink: 0; text-align: center;
+}
+.ex-check {
+  font-size: 0.75rem; width: 14px; flex-shrink: 0; text-align: center;
+}
+.ex-name-short {
+  font-size: 0.72rem; color: #c5e8c5; line-height: 1.2;
+  overflow: hidden;
+}
 
-  .ex-num {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: #2a3e2a;
-    color: #a5d6a7;
-    font-size: 0.65rem;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .ex-name { font-size: 0.78rem; color: #c8e6c9; line-height: 1.3; }
-  .ex-reps { font-size: 0.65rem; color: #5a8a5a; margin-top: 1px; }
+/* ── CONTENT ── */
+#content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
 
-  /* ── CONTENT AREA ── */
-  #content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-width: 0;
-  }
+/* ── VIDEO ── */
+#video-wrap {
+  flex: 1;
+  position: relative;
+  background: #000;
+  min-height: 0;
+}
+#yt-player {
+  width: 100%; height: 100%;
+  border: none; display: block;
+}
 
-  /* Exercise header */
-  #ex-header {
-    background: #162216;
-    padding: 14px 20px 10px;
-    border-bottom: 1px solid #2a3a2a;
-    flex-shrink: 0;
-  }
-  #section-badge {
-    display: inline-block;
-    background: #1b4a1b;
-    color: #81c784;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-bottom: 6px;
-  }
-  #ex-title { font-size: 1.5rem; font-weight: 700; color: #e8f5e9; line-height: 1.1; }
-  #ex-reps-main { font-size: 0.9rem; color: #a5d6a7; margin-top: 4px; }
-  #ex-cue {
-    font-size: 0.8rem;
-    color: #7aaa7a;
-    margin-top: 6px;
-    line-height: 1.45;
-    font-style: italic;
-  }
+/* ── REST OVERLAY ── */
+#rest-overlay {
+  display: none;
+  position: absolute; inset: 0;
+  background: rgba(10,20,10,0.93);
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  z-index: 10;
+}
+.rest-label { font-size: 0.8rem; color: #66bb6a; letter-spacing: 0.15em; text-transform: uppercase; }
+#rest-count { font-size: 4rem; font-weight: 800; color: #a5d6a7; line-height: 1; }
+#rest-next-name { font-size: 0.85rem; color: #6a9e6a; text-align: center; max-width: 240px; }
+.skip-btn {
+  margin-top: 6px; padding: 8px 20px;
+  background: #2a3e2a; color: #a5d6a7;
+  border: 1px solid #3a5a3a; border-radius: 8px;
+  cursor: pointer; font-size: 0.8rem;
+}
+.skip-btn:hover { background: #334d33; }
 
-  /* Video container */
-  #video-wrap {
-    flex: 1;
-    position: relative;
-    background: #000;
-    min-height: 0;
-  }
-  #yt-player {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border: none;
-  }
+/* ── BOTTOM BAR ── */
+#bottom-bar {
+  display: flex;
+  align-items: stretch;
+  background: #141f14;
+  border-top: 1px solid #2a3e2a;
+  height: 110px;
+  flex-shrink: 0;
+}
 
-  /* ── FOOTER CONTROLS ── */
-  #footer {
-    background: #1a2e1a;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 2px solid #2e5c2e;
-    flex-shrink: 0;
-    gap: 12px;
-  }
+/* LEFT: stopwatch */
+#stopwatch-area {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-right: 1px solid #2a3e2a;
+  padding: 8px;
+  gap: 4px;
+}
+#timer-display {
+  font-size: 1.5rem; font-weight: 700; color: #a5d6a7;
+  font-variant-numeric: tabular-nums;
+}
+.timer-label { font-size: 0.58rem; color: #4a6a4a; text-transform: uppercase; letter-spacing: 0.08em; }
+.timer-btns { display: flex; gap: 5px; }
+.btn {
+  padding: 4px 10px; border: none; border-radius: 5px;
+  cursor: pointer; font-size: 0.68rem; font-weight: 600;
+}
+.btn-timer { background: #1b3e1b; color: #81c784; border: 1px solid #2e5c2e; }
+.btn-timer:hover { background: #234d23; }
 
-  /* Timer */
-  #timer-wrap { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
-  #timer-display {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #66bb6a;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-  #timer-label { font-size: 0.65rem; color: #5a8a5a; margin-top: 2px; text-transform: uppercase; }
-  #timer-btns { display: flex; gap: 6px; margin-top: 6px; }
+/* CENTER: cue */
+#cue-area {
+  flex: 1;
+  padding: 10px 14px;
+  display: flex; flex-direction: column; justify-content: center;
+  overflow: hidden;
+  border-right: 1px solid #2a3e2a;
+}
+#ex-cue {
+  font-size: 0.78rem; color: #b0d8b0; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
 
-  /* Buttons */
-  .btn {
-    padding: 9px 18px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.02em;
-  }
-  .btn:active { transform: scale(0.96); }
-  .btn-primary {
-    background: linear-gradient(135deg, #2e7d32, #43a047);
-    color: #fff;
-    font-size: 1rem;
-    padding: 11px 28px;
-    box-shadow: 0 3px 10px rgba(46,125,50,0.4);
-  }
-  .btn-primary:hover { background: linear-gradient(135deg, #388e3c, #4caf50); }
-  .btn-secondary {
-    background: #2a3e2a;
-    color: #a5d6a7;
-    border: 1px solid #3a5a3a;
-  }
-  .btn-secondary:hover { background: #334d33; }
-  .btn-small {
-    padding: 4px 10px;
-    font-size: 0.7rem;
-    border-radius: 5px;
-  }
-  .btn-timer { background: #1b3e1b; color: #81c784; border: 1px solid #2e5c2e; }
-  .btn-timer:hover { background: #234d23; }
-  .btn-danger { background: #4a1515; color: #ef9a9a; border: 1px solid #6a2020; }
+/* RIGHT: reps + nav */
+#reps-area {
+  width: 175px;
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8px;
+  gap: 5px;
+}
+#section-badge {
+  font-size: 0.58rem; color: #66bb6a; text-transform: uppercase;
+  letter-spacing: 0.06em; text-align: center;
+}
+#ex-reps-main {
+  font-size: 0.85rem; font-weight: 700; color: #e8f5e9; text-align: center;
+}
+#nav-btns { display: flex; gap: 7px; align-items: center; margin-top: 2px; }
+.btn-primary {
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  color: #fff; padding: 6px 14px; border-radius: 7px;
+  font-size: 0.75rem; font-weight: 700;
+}
+.btn-primary:hover { background: linear-gradient(135deg, #388e3c, #4caf50); }
+.btn-secondary {
+  background: #2a3e2a; color: #a5d6a7;
+  border: 1px solid #3a5a3a; padding: 6px 10px; border-radius: 7px;
+  font-size: 0.75rem;
+}
+.btn-secondary:hover { background: #334d33; }
 
-  #nav-btns { display: flex; gap: 10px; align-items: center; }
-  #ex-counter { font-size: 0.75rem; color: #5a8a5a; text-align: center; }
-
-  /* ── REST OVERLAY ── */
-  #rest-overlay {
-    display: none;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.88);
-    z-index: 100;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-  #rest-overlay.show { display: flex; }
-  #rest-count { font-size: 5rem; font-weight: 700; color: #66bb6a; line-height: 1; }
-  #rest-title { font-size: 1.1rem; color: #a5d6a7; }
-  #rest-next { font-size: 0.85rem; color: #6a9a6a; }
-
-  /* ── COMPLETE SCREEN ── */
-  #complete-screen {
-    display: none;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #0f1a0f;
-    z-index: 200;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 16px;
-    padding: 40px;
-  }
-  #complete-screen.show { display: flex; }
-  .complete-icon { font-size: 4rem; }
-  .complete-title { font-size: 2rem; font-weight: 700; color: #66bb6a; }
-  .complete-sub { font-size: 1rem; color: #a5d6a7; }
-  .complete-stats { font-size: 0.85rem; color: #6a9e6a; }
-
-  /* Scrollbar for sidebar */
-  #sidebar { scrollbar-width: thin; scrollbar-color: #2e5c2e #141f14; }
+/* ── COMPLETE SCREEN ── */
+#complete-screen {
+  display: none;
+  position: fixed; inset: 0;
+  background: #0d1a0d;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; z-index: 100;
+}
+.complete-icon { font-size: 4rem; }
+.complete-title { font-size: 2rem; font-weight: 800; color: #a5d6a7; }
+.complete-sub { font-size: 1rem; color: #6a9e6a; }
+.complete-stats { font-size: 0.85rem; color: #5a8a5a; margin-top: 8px; }
 </style>
 </head>
 <body>
+<div id="page">
 
 <!-- TOP BAR -->
 <div id="topbar">
-  <div>
-    <a href="index.html" style="font-size:0.75rem;color:#66bb6a;text-decoration:none;display:inline-block;margin-bottom:4px;">← Home</a>
-    <h1 id="workout-title">🏌️ Morning Flexibility Routine — Sections A–D</h1>
-    <div class="subtitle">Golf · Mobility · ~22 min · 13 exercises</div>
-  </div>
-  <div style="text-align:right">
-    <div style="font-size:0.7rem;color:#6a9e6a;">Est. time</div>
-    <div style="font-size:1rem;font-weight:700;color:#a5d6a7;">~22 min</div>
-  </div>
+  <a href="index.html" class="home-link">← Home</a>
+  <div id="topbar-title">🏌️ Morning Flexibility</div>
+  <div id="topbar-meta">Golf · Mobility · ~22 min</div>
+  <div id="topbar-counter">1 / 13</div>
 </div>
 
 <!-- PROGRESS BAR -->
 <div id="progress-wrap">
-  <div id="progress-label">
-    <span id="progress-text">Exercise 1 of 13</span>
-    <span id="progress-pct">0%</span>
-  </div>
   <div id="progress-bar-bg">
     <div id="progress-bar-fill" style="width:0%"></div>
   </div>
@@ -300,57 +266,60 @@
 <div id="main">
 
   <!-- SIDEBAR -->
-  <div id="sidebar" id="exercise-list"></div>
+  <div id="sidebar">
+    <!-- Built by JS -->
+  </div>
 
   <!-- CONTENT -->
   <div id="content">
-    <div id="ex-header">
-      <div id="section-badge">Section A — Hip Mobility</div>
-      <div id="ex-title">90/90 Hip Stretch</div>
-      <div id="ex-reps-main">2 × 60 sec each side</div>
-      <div id="ex-cue">Front shin parallel, back shin parallel. Sit tall — don't slouch. Feel the deep glute and hip stretch.</div>
-    </div>
+
+    <!-- VIDEO -->
     <div id="video-wrap">
       <iframe id="yt-player"
-        src="https://www.youtube.com/embed/t4Zz6-aG8Iw?autoplay=0&rel=0&modestbranding=1"
+        src=""
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen>
       </iframe>
+
       <!-- REST OVERLAY -->
       <div id="rest-overlay">
-        <div id="rest-title">REST</div>
+        <div class="rest-label">Rest</div>
         <div id="rest-count">15</div>
-        <div id="rest-next" id="rest-next-name"></div>
-        <button class="btn btn-secondary btn-small" onclick="skipRest()">Skip Rest →</button>
+        <div id="rest-next-name"></div>
+        <button class="skip-btn" onclick="skipRest()">Skip Rest →</button>
       </div>
     </div>
-  </div>
 
-</div>
+    <!-- BOTTOM BAR -->
+    <div id="bottom-bar">
 
-<!-- FOOTER -->
-<div id="footer">
-  <div id="timer-wrap">
-    <div id="timer-display">0:00</div>
-    <div id="timer-label">Stopwatch</div>
-    <div id="timer-btns">
-      <button class="btn btn-timer btn-small" onclick="toggleTimer()">Start</button>
-      <button class="btn btn-timer btn-small" onclick="resetTimer()">Reset</button>
+      <!-- LEFT: Stopwatch -->
+      <div id="stopwatch-area">
+        <div id="timer-display">0:00</div>
+        <div class="timer-label">Stopwatch</div>
+        <div class="timer-btns">
+          <button class="btn btn-timer" onclick="toggleTimer()" id="timer-toggle-btn">Start</button>
+          <button class="btn btn-timer" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+
+      <!-- CENTER: Cue -->
+      <div id="cue-area">
+        <div id="ex-cue">Loading...</div>
+      </div>
+
+      <!-- RIGHT: Reps + nav -->
+      <div id="reps-area">
+        <div id="section-badge">Section A</div>
+        <div id="ex-reps-main">—</div>
+        <div id="nav-btns">
+          <button class="btn btn-secondary" onclick="prevExercise()">◀</button>
+          <button class="btn btn-primary" onclick="markDone()">✓ Done</button>
+          <button class="btn btn-secondary" onclick="nextExercise()">▶</button>
+        </div>
+      </div>
+
     </div>
-  </div>
-
-  <div id="nav-btns">
-    <button class="btn btn-secondary" onclick="prevExercise()">◀ Prev</button>
-    <div style="text-align:center">
-      <div id="ex-counter" style="font-size:0.8rem;color:#6a9e6a;margin-bottom:4px">1 / 13</div>
-      <button class="btn btn-primary" onclick="nextExercise()">Next ▶</button>
-    </div>
-    <button class="btn btn-secondary" onclick="toggleList()" title="Exercise list">☰</button>
-  </div>
-
-  <div style="text-align:right;font-size:0.72rem;color:#5a7a5a;line-height:1.5;">
-    <div>Click <strong style="color:#81c784">Next ▶</strong> after each exercise</div>
-    <div>Use timer to track hold times</div>
   </div>
 </div>
 
@@ -358,330 +327,333 @@
 <div id="complete-screen">
   <div class="complete-icon">🏆</div>
   <div class="complete-title">Workout Complete!</div>
-  <div class="complete-sub">Morning Flexibility · Sections A–D</div>
+  <div class="complete-sub">🏌️ Morning Flexibility</div>
   <div class="complete-stats" id="complete-stats"></div>
-  <div style="margin-top:20px;display:flex;gap:12px;">
-    <button class="btn btn-primary" onclick="restartWorkout()">▶ Start Again</button>
-    <button class="btn btn-secondary" onclick="closeComplete()">✕ Close</button>
+  <div style="margin-top:16px;display:flex;gap:12px;">
+    <button class="btn btn-primary" onclick="restartWorkout()" style="padding:10px 22px;font-size:0.85rem;">▶ Start Again</button>
+    <a href="index.html" class="btn btn-secondary" style="padding:10px 22px;font-size:0.85rem;text-decoration:none;">← Home</a>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────────
-// EXERCISE DATA
-// ─────────────────────────────────────────────────────────
+// ─── EXERCISE DATA ───────────────────────────────────────────
 const exercises = [
-  // ── SECTION A: HIP MOBILITY
   {
-    section: "A — Hip Mobility",
-    name: "90/90 Hip Stretch",
-    reps: "2 × 60 sec each side",
-    cue: "Front shin parallel, back shin parallel. Sit tall — don't slouch. Feel the deep glute and hip stretch. Switch sides after each 60 sec.",
-    videoId: "t4Zz6-aG8Iw", start: 18, end: 130,
-    rest: 20
+    section: 'A — Hip Mobility',
+    name: '90/90 Hip Stretch',
+    reps: '2 × 60 sec each side',
+    cue:  'Front shin parallel, back shin parallel. Sit tall. Feel the deep glute stretch. Switch sides at the 60-sec mark — do both the front-shin and back-shin position.',
+    videoId: 't4Zz6-aG8Iw',
+    start: 18,
+    end:   270,
+    rest:  15
   },
   {
-    section: "A — Hip Mobility",
-    name: "Hip Flexor Lunge Stretch",
-    reps: "2 × 45 sec each side",
-    cue: "Back knee down, drive hips forward gently. Squeeze the back glute. For LH golfer, left hip flexor is your lead side — prioritize it.",
-    videoId: "iZ1eZBY4fwM", start: 12, end: 100,
-    rest: 20
+    section: 'A — Hip Mobility',
+    name: 'Hip Flexor Lunge Stretch',
+    reps: '2 × 45 sec each side',
+    cue:  'Back knee down, drive hips forward gently. Squeeze the back glute. Left hip flexor is your lead side as a LH golfer — give it extra time.',
+    videoId: 'iZ1eZBY4fwM',
+    start: 12,
+    end:   100,
+    rest:  15
   },
   {
-    section: "A — Hip Mobility",
-    name: "Pigeon Pose (Hip External Rotation)",
-    reps: "2 × 60 sec each side",
-    cue: "Chair version if floor is tough: cross ankle over opposite knee, lean forward gently. Great for external hip rotation and glute stretch.",
-    videoId: "46phRH_09yM", start: 15, end: 110,
-    rest: 20
+    section: 'A — Hip Mobility',
+    name: 'Pigeon Pose',
+    reps: '2 × 60 sec each side',
+    cue:  'Chair version if floor is tough: cross ankle over opposite knee, lean forward gently. Great for external hip rotation and glute stretch.',
+    videoId: '46phRH_09yM',
+    start: 15,
+    end:   120,
+    rest:  15
   },
   {
-    section: "A — Hip Mobility",
-    name: "Lateral Side Lunge",
-    reps: "10 reps each side × 2",
-    cue: "Step wide, shift weight side to side. Keep toes forward or slightly out. Feel inner thigh and hip open. Slow and controlled.",
-    videoId: "nWBKgtVjIjE", start: 10, end: 85,
-    rest: 15
-  },
-  // ── SECTION B: THORACIC SPINE
-  {
-    section: "B — Thoracic Spine",
-    name: "Open Books (Thoracic Rotation)",
-    reps: "10 each side × 2",
-    cue: "Lie on side, knees stacked. Keep knees together — only the upper body rotates. Follow your hand with your eyes. Great for desk posture.",
-    videoId: "5TdmVlQe64c", start: 12, end: 100,
-    rest: 15
+    section: 'A — Hip Mobility',
+    name: 'Lateral Side Lunge',
+    reps: '10 reps each side × 2',
+    cue:  'Step wide, shift weight side to side. Keep toes forward or slightly out. Feel inner thigh and hip open. Slow and controlled.',
+    videoId: 'nWBKgtVjIjE',
+    start: 10,
+    end:   85,
+    rest:  15
   },
   {
-    section: "B — Thoracic Spine",
-    name: "Foam Roller T-Spine Extension",
-    reps: "2 × 60 sec — move up the spine",
-    cue: "Roller across upper/mid back. Arms crossed or behind head. Let gravity extend your spine over the roller. Move to a new spot every 30 sec.",
-    videoId: "J1-aNR1yby0", start: 20, end: 120,
-    rest: 15
+    section: 'B — Thoracic Spine',
+    name: 'Open Books',
+    reps: '10 each side × 2',
+    cue:  'Lie on side, knees stacked. Keep knees together — only the upper body rotates. Follow your hand with your eyes. Great for desk posture.',
+    videoId: '5TdmVlQe64c',
+    start: 12,
+    end:   100,
+    rest:  15
   },
   {
-    section: "B — Thoracic Spine",
-    name: "Cat-Cow",
-    reps: "10 reps × 2",
-    cue: "Slow and deliberate. Full flexion to full extension. Breathe out on the round (cat), breathe in on the arch (cow). Don't rush this one.",
-    videoId: "KT6Fk7FWYfM", start: 10, end: 85,
-    rest: 10
+    section: 'B — Thoracic Spine',
+    name: 'Foam Roller T-Spine',
+    reps: '2 × 60 sec — move up the spine',
+    cue:  'Roller across upper/mid back. Arms crossed or behind head. Let gravity extend your spine over the roller. Move to a new spot every 30 sec.',
+    videoId: 'J1-aNR1yby0',
+    start: 20,
+    end:   120,
+    rest:  15
   },
   {
-    section: "B — Thoracic Spine",
-    name: "Thread the Needle",
-    reps: "10 each side × 2",
-    cue: "On hands and knees. Slide one arm under your body, follow it with your eyes. Feel the thoracic spine open. Extra reps on the draw-arm side for archery.",
-    videoId: "z-gJfzsPzlI", start: 14, end: 95,
-    rest: 15
+    section: 'B — Thoracic Spine',
+    name: 'Cat-Cow',
+    reps: '10 reps × 2',
+    cue:  "Slow and deliberate. Full flexion to full extension. Breathe out on the round (cat), breathe in on the arch (cow). Don't rush this one.",
+    videoId: 'KT6Fk7FWYfM',
+    start: 10,
+    end:   85,
+    rest:  10
   },
   {
-    section: "B — Thoracic Spine",
-    name: "Chin Tucks (Posture Reset)",
-    reps: "15 reps × 3",
-    cue: "Pull chin straight back — not down. Feel the back of neck lengthen. Counteracts forward head posture from desk work. Can do this sitting at your desk.",
-    videoId: "O2kkwT6t3R0", start: 10, end: 80,
-    rest: 10
-  },
-  // ── SECTION C: SHOULDER & ARM
-  {
-    section: "C — Shoulder & Arm",
-    name: "Cross-Body Shoulder Stretch",
-    reps: "2 × 45 sec each side",
-    cue: "Pull arm across chest at shoulder height. Don't shrug. For LH golfer, right shoulder is your lead arm — prioritize it. Good for archery draw arm too.",
-    videoId: "pD236y4-YRc", start: 8, end: 80,
-    rest: 15
+    section: 'B — Thoracic Spine',
+    name: 'Thread the Needle',
+    reps: '10 each side × 2',
+    cue:  'On hands and knees. Slide one arm under your body, follow it with your eyes. Feel the thoracic spine open. Extra reps on draw-arm side for archery.',
+    videoId: 'z-gJfzsPzlI',
+    start: 14,
+    end:   95,
+    rest:  15
   },
   {
-    section: "C — Shoulder & Arm",
-    name: "Doorway Chest Stretch",
-    reps: "2 × 45 sec",
-    cue: "Both arms at 90° on doorframe, step through gently. Opens chest and front shoulder. Counteracts desk rounding. Critical for both golf and archery posture.",
-    videoId: "M850sCj9LHQ", start: 14, end: 95,
-    rest: 15
-  },
-  // ── SECTION D: GOLF DRILLS
-  {
-    section: "D — Golf Drills",
-    name: "Hip Hinge Posture Drill",
-    reps: "15 reps (slow)",
-    cue: "Hold club vertically against your spine — touching head, upper back, and tailbone. Hinge forward from the hips. This grooves your golf address posture. Slow and deliberate.",
-    videoId: "Exe5K5EyV6Q", start: 18, end: 130,
-    rest: 15
+    section: 'B — Thoracic Spine',
+    name: 'Chin Tucks',
+    reps: '15 reps × 3',
+    cue:  'Pull chin straight back — not down. Feel the back of neck lengthen. Counteracts forward head posture. Can do this sitting at your desk too.',
+    videoId: 'O2kkwT6t3R0',
+    start: 10,
+    end:   80,
+    rest:  10
   },
   {
-    section: "D — Golf Drills",
-    name: "Slow Motion LH Swing",
-    reps: "15 full swings — no ball",
-    cue: "Full LH swing in slow motion. Lead arm (right arm) stays extended on backswing. Left shoulder goes UNDER your chin at the top. Feel the shoulder turn — don't lift.",
-    videoId: "gqWY6A89VWU", start: 12, end: 200,
-    rest: 0
+    section: 'C — Shoulder & Arm',
+    name: 'Cross-Body Shoulder Stretch',
+    reps: '2 × 45 sec each side',
+    cue:  "Pull arm across chest at shoulder height. Don't shrug. Right shoulder is your lead arm as a LH golfer — prioritize it. Good for archery draw arm too.",
+    videoId: 'pD236y4-YRc',
+    start: 8,
+    end:   80,
+    rest:  15
+  },
+  {
+    section: 'C — Shoulder & Arm',
+    name: 'Doorway Chest Stretch',
+    reps: '2 × 45 sec',
+    cue:  'Both arms at 90° on doorframe, step through gently. Opens chest and front shoulder. Counteracts desk rounding. Critical for both golf and archery posture.',
+    videoId: 'M850sCj9LHQ',
+    start: 14,
+    end:   95,
+    rest:  15
+  },
+  {
+    section: 'D — Golf Drills',
+    name: 'Hip Hinge Posture Drill',
+    reps: '15 reps (slow)',
+    cue:  'Hold club vertically against spine — touching head, upper back, and tailbone. Hinge forward from the hips. Grooves your golf address posture. Slow and deliberate.',
+    videoId: 'Exe5K5EyV6Q',
+    start: 18,
+    end:   130,
+    rest:  15
+  },
+  {
+    section: 'D — Golf Drills',
+    name: 'Slow Motion LH Swing',
+    reps: '15 full swings — no ball',
+    cue:  "Full LH swing in slow motion. Right arm stays extended on backswing. Left shoulder goes UNDER your chin at the top. Feel the shoulder turn — don't lift.",
+    videoId: 'gqWY6A89VWU',
+    start: 12,
+    end:   200,
+    rest:  0
   },
 ];
 
-// ─────────────────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────────────────
+// ─── STATE ──────────────────────────────────────────────────
 let current = 0;
 let completed = new Set();
-let timerInterval = null;
-let timerSeconds = 0;
-let timerRunning = false;
-let restInterval = null;
-let restSeconds = 0;
-let workoutStartTime = Date.now();
 
-// ─────────────────────────────────────────────────────────
-// BUILD SIDEBAR
-// ─────────────────────────────────────────────────────────
+// Stopwatch
+let swInterval = null;
+let swSeconds = 0;
+let swRunning = false;
+
+// Rest timer
+let restInterval = null;
+let restRemaining = 0;
+
+// ─── INIT ───────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  buildSidebar();
+  loadExercise(0);
+});
+
+// ─── SIDEBAR ────────────────────────────────────────────────
 function buildSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  let currentSection = '';
-  let html = '';
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = '';
+  let lastSection = null;
 
   exercises.forEach((ex, i) => {
-    if (ex.section !== currentSection) {
-      currentSection = ex.section;
-      html += `<div class="section-label">${ex.section}</div>`;
+    if (ex.section !== lastSection) {
+      const lbl = document.createElement('div');
+      lbl.className = 'section-label';
+      lbl.textContent = ex.section;
+      sb.appendChild(lbl);
+      lastSection = ex.section;
     }
-    html += `
-      <div class="ex-item${i === current ? ' active' : ''}${completed.has(i) ? ' done' : ''}"
-           id="ex-item-${i}" onclick="goToExercise(${i})">
-        <div class="ex-num">${completed.has(i) ? '✓' : i+1}</div>
-        <div>
-          <div class="ex-name">${ex.name}</div>
-          <div class="ex-reps">${ex.reps}</div>
-        </div>
-      </div>`;
+    const item = document.createElement('div');
+    item.className = 'ex-item' + (i === 0 ? ' active' : '');
+    item.id = 'sb-item-' + i;
+    item.onclick = () => loadExercise(i);
+    item.innerHTML = `
+      <span class="ex-num">${i + 1}</span>
+      <span class="ex-check" id="sb-check-${i}">○</span>
+      <span class="ex-name-short">${ex.name}</span>
+    `;
+    sb.appendChild(item);
   });
-
-  sidebar.innerHTML = html;
 }
 
-// ─────────────────────────────────────────────────────────
-// LOAD EXERCISE
-// ─────────────────────────────────────────────────────────
+function updateSidebar(idx) {
+  document.querySelectorAll('.ex-item').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+    el.classList.toggle('done', completed.has(i));
+    document.getElementById('sb-check-' + i).textContent =
+      completed.has(i) ? '✓' : (i === idx ? '▶' : '○');
+  });
+  // Scroll active item into view
+  const active = document.getElementById('sb-item-' + idx);
+  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─── LOAD EXERCISE ──────────────────────────────────────────
 function loadExercise(idx) {
+  if (idx < 0 || idx >= exercises.length) return;
+  current = idx;
+  stopRest();
+
   const ex = exercises[idx];
 
-  document.getElementById('section-badge').textContent = 'Section ' + ex.section;
-  document.getElementById('ex-title').textContent = ex.name;
+  // Update UI
+  document.getElementById('topbar-counter').textContent = `${idx + 1} / ${exercises.length}`;
+  document.getElementById('section-badge').textContent = ex.section;
   document.getElementById('ex-reps-main').textContent = ex.reps;
   document.getElementById('ex-cue').textContent = ex.cue;
-  document.getElementById('ex-counter').textContent = `${idx+1} / ${exercises.length}`;
 
-  // Load video
-  const startParam = ex.start ? `&start=${ex.start}` : '';
-  const endParam = ex.end ? `&end=${ex.end}` : '';
+  // Video
+  const startP = ex.start ? `&start=${ex.start}` : '';
+  const endP   = ex.end   ? `&end=${ex.end}`     : '';
   document.getElementById('yt-player').src =
-    `https://www.youtube.com/embed/${ex.videoId}?autoplay=1&rel=0&modestbranding=1${startParam}${endParam}`;
+    `https://www.youtube.com/embed/${ex.videoId}?autoplay=1&rel=0&modestbranding=1${startP}${endP}`;
 
   // Progress bar
   const pct = Math.round((idx / exercises.length) * 100);
   document.getElementById('progress-bar-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = `Exercise ${idx+1} of ${exercises.length}`;
-  document.getElementById('progress-pct').textContent = pct + '%';
 
-  // Reset timer
+  updateSidebar(idx);
   resetTimer();
-
-  // Update sidebar
-  buildSidebar();
-
-  // Scroll sidebar item into view
-  setTimeout(() => {
-    const el = document.getElementById(`ex-item-${idx}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
 }
 
-function goToExercise(idx) {
-  if (restInterval) clearInterval(restInterval);
-  document.getElementById('rest-overlay').classList.remove('show');
-  current = idx;
-  loadExercise(idx);
-}
-
-// ─────────────────────────────────────────────────────────
-// NAVIGATION
-// ─────────────────────────────────────────────────────────
-function nextExercise() {
+// ─── NAVIGATION ─────────────────────────────────────────────
+function markDone() {
   completed.add(current);
-
-  if (current >= exercises.length - 1) {
-    showComplete();
-    return;
-  }
-
-  const restTime = exercises[current].rest;
-  current++;
-
-  if (restTime > 0) {
-    startRest(restTime, exercises[current].name);
+  updateSidebar(current);
+  const ex = exercises[current];
+  if (ex.rest > 0) {
+    startRest(ex.rest, current + 1);
   } else {
-    loadExercise(current);
+    advanceToNext();
   }
+}
+
+function nextExercise() {
+  advanceToNext();
 }
 
 function prevExercise() {
-  if (restInterval) clearInterval(restInterval);
-  document.getElementById('rest-overlay').classList.remove('show');
-  if (current > 0) {
-    current--;
-    loadExercise(current);
+  stopRest();
+  if (current > 0) loadExercise(current - 1);
+}
+
+function advanceToNext() {
+  stopRest();
+  if (current + 1 < exercises.length) {
+    loadExercise(current + 1);
+  } else {
+    showComplete();
   }
 }
 
-// ─────────────────────────────────────────────────────────
-// REST TIMER
-// ─────────────────────────────────────────────────────────
-function startRest(seconds, nextName) {
-  restSeconds = seconds;
-  const overlay = document.getElementById('rest-overlay');
-  document.getElementById('rest-count').textContent = restSeconds;
-  document.getElementById('rest-next').textContent = 'Up next: ' + nextName;
-  overlay.classList.add('show');
+// ─── REST TIMER ─────────────────────────────────────────────
+function startRest(seconds, nextIdx) {
+  restRemaining = seconds;
+  const nextName = nextIdx < exercises.length ? exercises[nextIdx].name : 'Workout Complete!';
+  document.getElementById('rest-count').textContent = restRemaining;
+  document.getElementById('rest-next-name').textContent = 'Up next: ' + nextName;
+  document.getElementById('rest-overlay').style.display = 'flex';
 
   restInterval = setInterval(() => {
-    restSeconds--;
-    document.getElementById('rest-count').textContent = restSeconds;
-    if (restSeconds <= 0) {
-      clearInterval(restInterval);
-      overlay.classList.remove('show');
-      loadExercise(current);
+    restRemaining--;
+    document.getElementById('rest-count').textContent = restRemaining;
+    if (restRemaining <= 0) {
+      skipRest();
     }
   }, 1000);
 }
 
 function skipRest() {
-  if (restInterval) clearInterval(restInterval);
-  document.getElementById('rest-overlay').classList.remove('show');
-  loadExercise(current);
+  stopRest();
+  advanceToNext();
 }
 
-// ─────────────────────────────────────────────────────────
-// STOPWATCH TIMER
-// ─────────────────────────────────────────────────────────
+function stopRest() {
+  clearInterval(restInterval);
+  restInterval = null;
+  document.getElementById('rest-overlay').style.display = 'none';
+}
+
+// ─── STOPWATCH ──────────────────────────────────────────────
 function toggleTimer() {
-  timerRunning = !timerRunning;
-  const btn = document.querySelector('#timer-btns .btn-timer:first-child');
-  if (timerRunning) {
-    btn.textContent = 'Pause';
-    timerInterval = setInterval(() => {
-      timerSeconds++;
-      const m = Math.floor(timerSeconds / 60);
-      const s = timerSeconds % 60;
-      document.getElementById('timer-display').textContent =
-        `${m}:${String(s).padStart(2,'0')}`;
-    }, 1000);
+  if (swRunning) {
+    clearInterval(swInterval);
+    swRunning = false;
+    document.getElementById('timer-toggle-btn').textContent = 'Start';
   } else {
-    btn.textContent = 'Start';
-    clearInterval(timerInterval);
+    swInterval = setInterval(() => {
+      swSeconds++;
+      const m = Math.floor(swSeconds / 60);
+      const s = swSeconds % 60;
+      document.getElementById('timer-display').textContent =
+        m + ':' + String(s).padStart(2, '0');
+    }, 1000);
+    swRunning = true;
+    document.getElementById('timer-toggle-btn').textContent = 'Pause';
   }
 }
 
 function resetTimer() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerSeconds = 0;
+  clearInterval(swInterval);
+  swRunning = false;
+  swSeconds = 0;
   document.getElementById('timer-display').textContent = '0:00';
-  document.querySelector('#timer-btns .btn-timer:first-child').textContent = 'Start';
+  document.getElementById('timer-toggle-btn').textContent = 'Start';
 }
 
-// ─────────────────────────────────────────────────────────
-// COMPLETE SCREEN
-// ─────────────────────────────────────────────────────────
+// ─── COMPLETE ───────────────────────────────────────────────
 function showComplete() {
-  // Stop video
-  document.getElementById('yt-player').src = '';
-  document.getElementById('progress-bar-fill').style.width = '100%';
-
-  const elapsed = Math.round((Date.now() - workoutStartTime) / 60000);
+  const el = document.getElementById('complete-screen');
+  el.style.display = 'flex';
   document.getElementById('complete-stats').textContent =
-    `${exercises.length} exercises completed · ~${elapsed} minutes`;
-
-  document.getElementById('complete-screen').classList.add('show');
-  buildSidebar();
+    `${completed.size} of ${exercises.length} exercises completed`;
 }
 
 function restartWorkout() {
-  document.getElementById('complete-screen').classList.remove('show');
-  current = 0;
   completed.clear();
-  workoutStartTime = Date.now();
+  document.getElementById('complete-screen').style.display = 'none';
   loadExercise(0);
 }
-
-function closeComplete() {
-  document.getElementById('complete-screen').classList.remove('show');
-}
-
-// Toggle sidebar on small screens
-function toggleList() {
-  const sb = document.getElementById('sidebar');
-  sb.style.display = sb.style.display === 'none' ? 'block' : 'none';
-}
-
-// ─────────────────────────�
+</script>
+</body>
+</html>
