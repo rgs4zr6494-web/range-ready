@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Range Ready — Sport Fitness</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0d1a0d;
+    color: #e8f5e9;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    background: linear-gradient(160deg, #0d2a0d 0%, #1a3a1a 50%, #0d2a0d 100%);
+    padding: 48px 24px 36px;
+    text-align: center;
+    border-bottom: 2px solid #2e5c2e;
+    position: relative;
+    overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px; right: -60px; bottom: -60px;
+    background: radial-gradient(ellipse at 30% 50%, rgba(46,125,50,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(56,142,60,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-icons { font-size: 2.8rem; letter-spacing: 0.2em; margin-bottom: 14px; }
+  .hero-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #a5d6a7;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .hero-title span { color: #66bb6a; }
+  .hero-sub {
+    font-size: 1rem;
+    color: #6a9e6a;
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+  .hero-tagline {
+    font-size: 0.82rem;
+    color: #4a7a4a;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ── SPORT TABS ── */
+  #sport-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 24px 0;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 8px 22px;
+    border-radius: 20px;
+    border: 1.5px solid #2e5c2e;
+    background: transparent;
+    color: #6a9e6a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: #1b4a1b;
+    color: #a5d6a7;
+    border-color: #66bb6a;
+  }
+  .tab-btn.active { box-shadow: 0 2px 10px rgba(102,187,106,0.25); }
+
+  /* ── SECTION HEADER ── */
+  .section-hdr {
+    padding: 24px 24px 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #5a8a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #1e3a1e;
+  }
+
+  /* ── WORKOUT GRID ── */
+  #workout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    padding: 20px 24px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: #141f14;
+    border: 1px solid #2a3e2a;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: #66bb6a;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .card.coming-soon { opacity: 0.55; cursor: default; pointer-events: none; }
+
+  .card-accent {
+    height: 5px;
+    background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  }
+  .card-accent.archery { background: linear-gradient(90deg, #4a1576, #9c27b0); }
+  .card-accent.mixed   { background: linear-gradient(90deg, #1565c0, #42a5f5); }
+
+  .card-body { padding: 18px; }
+
+  .card-sport {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #66bb6a;
+    background: #1b3e1b;
+    padding: 3px 9px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .card-sport.archery { color: #ce93d8; background: #2d0d40; }
+  .card-sport.mixed   { color: #90caf9; background: #0d1f40; }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e8f5e9;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: #6a9a6a;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-size: 0.68rem;
+    color: #5a8a5a;
+    background: #1a2e1a;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid #2a3e2a;
+  }
+
+  .card-cta {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    letter-spacing: 0.03em;
+  }
+  .card-cta.archery { background: linear-gradient(135deg, #6a1b9a, #9c27b0); }
+  .card-cta.coming  { background: #2a3a2a; color: #5a7a5a; }
+
+  /* ── IPHONE NOTE ── */
+  #iphone-note {
+    background: #141f14;
+    border: 1px solid #2a3e2a;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 0 24px 24px;
+    max-width: 700px;
+  }
+  #iphone-note h3 { font-size: 0.85rem; color: #a5d6a7; margin-bottom: 8px; }
+  #iphone-note p  { font-size: 0.78rem; color: #6a9a6a; line-height: 1.6; }
+  #iphone-note strong { color: #81c784; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.72rem;
+    color: #3a5a3a;
+    border-top: 1px solid #1e3a1e;
+  }
+
+  /* Hide/show by sport filter */
+  .workout-card { }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-icons">🏹 ⛳</div>
+  <div class="hero-title">Range <span>Ready</span></div>
+  <div class="hero-sub">Sport Fitness — Golf · Archery · Mobility</div>
+  <div class="hero-tagline">Follow-along workouts built for the range and the course</div>
+</div>
+
+<!-- SPORT FILTER TABS -->
+<div id="sport-tabs">
+  <button class="tab-btn active" onclick="filterSport('all', this)">All Workouts</button>
+  <button class="tab-btn" onclick="filterSport('golf', this)">⛳ Golf</button>
+  <button class="tab-btn" onclick="filterSport('archery', this)">🏹 Archery</button>
+  <button class="tab-btn" onclick="filterSport('mobility', this)">🧘 Mobility</button>
+</div>
+
+<!-- TV TIP -->
+<div style="padding: 20px 24px 0; max-width: 1100px; margin: 0 auto;">
+  <div id="iphone-note">
+    <h3>📱 iPhone + Vizio TV tip</h3>
+    <p>
+      Most Vizio SmartCast TVs (2018+) support <strong>AirPlay 2</strong> — swipe down from
+      top-right of your iPhone to open Control Center, tap <strong>Screen Mirroring</strong>,
+      and select your Vizio. Your whole screen mirrors to the TV wirelessly.
+      Bookmark this page on your phone and you're one tap away from any workout on the big screen.
+    </p>
+  </div>
+</div>
+
+<!-- SECTION: READY NOW -->
+<div class="section-hdr">Ready to Go</div>
+
+<!-- WORKOUT GRID -->
+<div id="workout-grid">
+
+  <!-- Morning Flexibility -->
+  <a href="morning-flexibility.html" class="card workout-card" data-sport="golf mobility">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-sport">⛳ Golf</div>
+      <div class="card-title">Morning Flexibility</div>
+      <div class="card-desc">Hip mobility, thoracic rotation, shoulder opening, and golf-specific movement drills. Sections A–D from your program.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~22 min</span>
+        <span class="meta-pill">📋 13 exercises</span>
+        <span class="meta-pill">🎯 Daily</span>
+      </div>
+    </div>
+    <div class="card-cta">Start ▶</div>
+  </a>
+
+  <!-- Core Workout — Coming Soon -->
+  <div class="card workout-card coming-soon" data-sport="golf mobility">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-sport">⛳ Golf</div>
+      <div class="card-title">Core Strength</div>
+      <div class="card-desc">Glute bridge, dead bug, bird dog, Pallof press, side plank, McGill curl-up and more. Section E — 3×/week.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~20 min</span>
+        <span class="meta-pill">📋 8 exercises</span>
+        <span class="meta-pill">🎯 3×/week</span>
+      </div>
+    </div>
+    <div class="card-cta coming">Coming Soon</div>
+  </div>
+
+  <!-- Archery Shoulder — Coming Soon -->
+  <div class="card workout-card coming-soon" data-sport="archery">
+    <div class="card-accent archery"></div>
+    <div class="card-body">
+      <div class="card-sport archery">🏹 Archery</div>
+      <div class="card-title">Shoulder Stability & Rotator Cuff</div>
+      <div class="card-desc">Pre-shoot stretches, rotator cuff strengthening, scapular stability, and draw simulation. Proactive shoulder program.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~18 min</span>
+        <span class="meta-pill">📋 12 exercises</span>
+        <span class="meta-pill">🎯 3×/week</span>
+      </div>
+    </div>
+    <div class="card-cta coming">Coming Soon</div>
+  </div>
+
+  <!-- Ankle Rehab — Coming Soon -->
+  <div class="card workout-card coming-soon" data-sport="mobility">
+    <div class="card-accent mixed"></div>
+    <div class="card-body">
+      <div class="card-sport mixed">🦶 Mobility</div>
+      <div class="card-title">Ankle Rehab — Phase 1</div>
+      <div class="card-desc">Foundation range of motion, ankle circles, calf stretches, and band exercises. Start here — daily program.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~12 min</span>
+        <span class="meta-pill">📋 10 exercises</span>
+        <span class="meta-pill">🎯 Daily</span>
+      </div>
+    </div>
+    <div class="card-cta coming">Coming Soon</div>
+  </div>
+
+  <!-- Golf Day Warm-Up — Coming Soon -->
+  <div class="card workout-card coming-soon" data-sport="golf">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-sport">⛳ Golf</div>
+      <div class="card-title">Golf Day Warm-Up</div>
+      <div class="card-desc">Quick 10-minute pre-round routine. Hip circles, thoracic rotation, golf drills. Sections D only — fast and focused.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~10 min</span>
+        <span class="meta-pill">📋 6 exercises</span>
+        <span class="meta-pill">🎯 Pre-round</span>
+      </div>
+    </div>
+    <div class="card-cta coming">Coming Soon</div>
+  </div>
+
+  <!-- Archery Pre-Shoot — Coming Soon -->
+  <div class="card workout-card coming-soon" data-sport="archery">
+    <div class="card-accent archery"></div>
+    <div class="card-body">
+      <div class="card-sport archery">🏹 Archery</div>
+      <div class="card-title">Archery Pre-Shoot Warm-Up</div>
+      <div class="card-desc">Sleeper stretch, pec opener, pendulum circles, and band pull-aparts. Gets the shoulder joint ready before you draw.</div>
+      <div class="card-meta">
+        <span class="meta-pill">⏱ ~8 min</span>
+        <span class="meta-pill">📋 6 exercises</span>
+        <span class="meta-pill">🎯 Pre-shoot</span>
+      </div>
+    </div>
+    <div class="card-cta coming">Coming Soon</div>
+  </div>
+
+</div>
+
+<footer>Range Ready · Sport Fitness · Built for Golf &amp; Archery</footer>
+
+<script>
+function filterSport(sport, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.querySelectorAll('.workout-card').forEach(card => {
+    if (sport === 'all') {
+      card.classList.remove('hidden');
+    } else {
+      const sports = card.dataset.sport || '';
+      card.classList.toggle('hidden', !sports.includes(sport));
+    }
+  });
+}
+</script>
+</body>
+</html>
