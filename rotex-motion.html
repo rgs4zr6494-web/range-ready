@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔄 ROTEXMotion Baseline — Range Ready</title>
+  <style>
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --surface2:  #22263a;
+      --border:    #2e3350;
+      --gold:      #e8c84a;
+      --gold-dim:  #8a7020;
+      --blue:      #4a9eda;
+      --green:     #5ec46a;
+      --orange:    #e87c4a;
+      --purple:    #b07ae8;
+      --text:      #e8e8f0;
+      --muted:     #7a8498;
+      --radius:    12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* ── nav ── */
+    .nav {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .nav a:hover { color: var(--text); }
+    .nav-sep { color: var(--border); font-size: 0.85rem; }
+
+    /* ── hero ── */
+    .hero {
+      text-align: center;
+      padding: 36px 20px 24px;
+    }
+    .hero-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .hero h1 { font-size: 1.7rem; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
+    .hero-sub { font-size: 0.95rem; color: var(--muted); margin-bottom: 16px; }
+    .hero-badges {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-bottom: 20px;
+    }
+    .badge {
+      font-size: 0.75rem; padding: 4px 10px;
+      border-radius: 20px; font-weight: 600;
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .badge-gold  { background: #2a2010; color: var(--gold);   border-color: var(--gold-dim); }
+    .badge-blue  { background: #0e2030; color: var(--blue);   border-color: #1a4060; }
+    .badge-green { background: #0e2010; color: var(--green);  border-color: #1a4020; }
+
+    .dr-joe-note {
+      max-width: 520px; margin: 0 auto 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 0.82rem; color: var(--muted);
+      line-height: 1.6; text-align: left;
+    }
+    .dr-joe-note strong { color: var(--gold); }
+
+    /* ── tab bar ── */
+    .tabs {
+      display: flex; gap: 6px; padding: 0 16px 16px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .tab {
+      padding: 7px 14px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface); color: var(--muted);
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab.active { background: var(--gold); color: #111; border-color: var(--gold); }
+    .tab:hover:not(.active) { border-color: var(--gold-dim); color: var(--text); }
+
+    /* ── section panels ── */
+    .panel { display: none; padding: 0 16px; max-width: 680px; margin: 0 auto; }
+    .panel.active { display: block; }
+
+    /* ── exercise cards ── */
+    .ex-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .ex-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; cursor: pointer;
+    }
+    .ex-num {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 800; flex-shrink: 0;
+    }
+    .num-gold   { background: #2a2010; color: var(--gold); }
+    .num-blue   { background: #0e2030; color: var(--blue); }
+    .num-green  { background: #0e2010; color: var(--green); }
+    .num-orange { background: #2a1408; color: var(--orange); }
+    .num-purple { background: #1a0e2a; color: var(--purple); }
+
+    .ex-title-block { flex: 1; }
+    .ex-name { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .ex-equipment { font-size: 0.72rem; color: var(--muted); }
+    .ex-sets {
+      font-size: 0.75rem; font-weight: 700;
+      background: #2a2010; color: var(--gold);
+      padding: 3px 9px; border-radius: 10px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .ex-chevron { color: var(--blue); font-size: 0.75rem; transition: transform 0.2s; flex-shrink: 0; }
+    .ex-chevron.open { transform: rotate(180deg); }
+
+    .ex-body {
+      display: none; padding: 0 16px 14px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .ex-body.open { display: block; }
+    .ex-desc { font-size: 0.83rem; color: #b0b8cc; line-height: 1.6; margin-bottom: 10px; padding-top: 10px; }
+    .ex-benefits {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+    }
+    .benefit-tag {
+      font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+      background: var(--surface2); color: var(--green);
+      border: 1px solid #1a4020;
+    }
+    .ex-tip {
+      background: #0f1923;
+      border-left: 3px solid var(--gold);
+      padding: 8px 10px; border-radius: 0 6px 6px 0;
+      font-size: 0.78rem; color: #a0a8b8; line-height: 1.5;
+    }
+
+    /* ── baseline timer widget ── */
+    .timer-widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .timer-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .timer-display {
+      font-size: 3.5rem; font-weight: 800; color: var(--gold);
+      font-variant-numeric: tabular-nums; line-height: 1;
+      margin-bottom: 12px;
+    }
+    .timer-ex-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .timer-ex-num { font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; }
+    .timer-progress {
+      height: 4px; background: var(--surface2); border-radius: 2px;
+      margin-bottom: 16px; overflow: hidden;
+    }
+    .timer-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.5s linear; }
+    .timer-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 22px; border-radius: 24px; border: none;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-primary { background: var(--gold); color: #111; }
+    .btn-primary:hover { background: #ffd84a; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--gold-dim); }
+    .btn-skip { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 10px 16px; }
+
+    .step-indicator {
+      display: flex; gap: 6px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .step-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .step-dot.done { background: var(--green); border-color: var(--green); }
+    .step-dot.current { background: var(--gold); border-color: var(--gold); width: 20px; border-radius: 4px; }
+
+    /* ── section header ── */
+    .section-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px; padding-top: 4px;
+    }
+    .section-head h2 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .section-head p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .section-stripe {
+      width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0;
+    }
+
+    /* ── reference card ── */
+    .ref-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .ref-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+    }
+    .ref-row:last-child { border-bottom: none; }
+    .ref-num {
+      width: 30px; text-align: center;
+      font-size: 0.85rem; font-weight: 800; color: var(--gold);
+      flex-shrink: 0;
+    }
+    .ref-name { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; }
+    .ref-target { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── complete screen ── */
+    .complete-screen {
+      display: none; text-align: center; padding: 40px 20px;
+    }
+    .complete-screen.show { display: block; }
+    .complete-icon { font-size: 3rem; margin-bottom: 12px; }
+    .complete-screen h2 { font-size: 1.4rem; color: var(--gold); margin-bottom: 8px; }
+    .complete-screen p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<!-- nav -->
+<div class="nav">
+  <a href="index.html">← Home</a>
+  <span class="nav-sep">/</span>
+  <span style="color:var(--muted);font-size:0.85rem">ROTEXMotion Baseline</span>
+</div>
+
+<!-- hero -->
+<div class="hero">
+  <div class="hero-icon">🔄</div>
+  <h1>ROTEXMotion Baseline</h1>
+  <p class="hero-sub">Dr. Joe LaCaze's System · Floor Model + Handheld · Golf & Archery</p>
+  <div class="hero-badges">
+    <span class="badge badge-gold">⏱ ~5 min twice daily</span>
+    <span class="badge badge-blue">📋 Exercises 7, 2, 6, 17, 22</span>
+    <span class="badge badge-green">🎯 Morning + Evening</span>
+  </div>
+  <div class="dr-joe-note">
+    <strong>Dr. Joe's Baseline:</strong> Exercises 7 · 2 · 6 · 17 · 22 — performed twice daily. Once in the morning before all exercise, activity, or farm work. Once after all that is done in the afternoon/evening. Total time for each session is about five minutes. This is your non-negotiable foundation before everything else.
+  </div>
+</div>
+
+<!-- tab bar -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('baseline')">⚡ Baseline (5 min)</div>
+  <div class="tab" onclick="switchTab('weekly')">📅 Weekly Plan</div>
+  <div class="tab" onclick="switchTab('wrist')">🖐 Wrist Protocol</div>
+  <div class="tab" onclick="switchTab('reference')">📋 All 27 Exercises</div>
+</div>
+
+<!-- ══ BASELINE PANEL ══ -->
+<div class="panel active" id="panel-baseline">
+
+  <!-- timer widget -->
+  <div class="timer-widget" id="timerWidget">
+    <div class="timer-label">Session Timer</div>
+    <div class="step-indicator" id="stepDots"></div>
+    <div class="timer-display" id="timerDisplay">0:30</div>
+    <div class="timer-ex-name" id="timerExName">Exercise #7 — Pelvic Thrust</div>
+    <div class="timer-ex-num" id="timerExNum">Exercise 1 of 5 · Set 1 of 2</div>
+    <div class="timer-progress"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
+    <div class="timer-btns">
+      <button class="btn btn-secondary btn-skip" onclick="skipTimer()">Skip</button>
+      <button class="btn btn-primary" id="timerBtn" onclick="toggleTimer()">▶ Start</button>
+      <button class="btn btn-secondary" onclick="resetTimer()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="complete-screen" id="completeScreen">
+    <div class="complete-icon">🏆</div>
+    <h2>Baseline Complete!</h2>
+    <p>5 exercises done. Do this again this evening.<br>Your body will thank you in 30 days.</p>
+    <button class="btn btn-primary" onclick="resetTimer()">↺ Go Again</button>
+  </div>
+
+  <!-- exercise list -->
+  <div class="section-head">
+    <div class="section-stripe" style="background:var(--gold)"></div>
+    <div>
+      <h2>Twice-Daily Baseline — Exercises 7, 2, 6, 17, 22</h2>
+      <p>Perform in order. 2 sets each. ~30 seconds per set. Rest 15 sec between sets.</p>
+    </div>
+  </div>
+
+  <!-- Ex 7 -->
+  <div class="ex-card">
+    <div class="ex-header" onclick="toggleEx(this)">
+      <div class="ex-num num-gold">#7</div>
+      <div class="ex-title-block">
+        <div class="ex-name">Pelvic Thrust</div>
+        <div class="ex-equipment">Floor Models</div>
+      </div>
+      <div class="ex-sets">2×12</div>
+      <div class="ex-chevron">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-desc">Stand on floor model in your normal stance. Drive your hips forward in a controlled pelvic thrust motion — slow and deliberate. Feel the pelvic floor activate and the low back decompress. This resets the base of your spine before anything else loads it.</div>
+      <div class="ex-benefits">
+        <span class="benefit-tag">Pelvic Floor Activation</span>
+        <span class="benefit-tag">Low Back Tension Release</span>
+        <span class="benefit-tag">Hip Range of Motion</span>
+      </div>
+      <div class="ex-tip">Farm work note: 30 years of bouncing and compression loads the lumbar spine downward. This exercise directly reverses that. Do not skip it — it is why Dr. Joe leads the baseline with it.</div>
+    </div>
+  </div>
+
+  <!-- Ex 2 -->
+  <div class="ex-card">
+    <div class="ex-header" onclick="toggleEx(this)">
+      <div class="ex-num num-blue">#2</div>
+      <div class="ex-title-block">
+        <div class="ex-name">Multi-Plane Squat</div>
+        <div class="ex-equipment">Floor Models</div>
+      </div>
+      <div class="ex-sets">2×10</div>
+      <div class="ex-chevron">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-desc">Slow squat on floor models moving through multiple planes — forward, lateral, rotational. Let the discs allow natural movement. Feel the ankle, knee, and hip chain activate together. This is the foundational lower body exercise the entire system builds on.</div>
+      <div class="ex-benefits">
+        <span class="benefit-tag">Ankle Mobility</span>
+        <span class="benefit-tag">Knee Stability</span>
+        <span class="benefit-tag">Spine Stability</span>
+      </div>
+      <div class="ex-tip">Golf: this is the ankle-to-hip chain your weight transfer needs. Archery: it builds the stable base your draw arm works against. Both sports live here.</div>
+    </div>
+  </div>
+
+  <!-- Ex 6 -->
+  <div class="ex-card">
+    <div class="ex-header" onclick="toggleEx(this)">
+      <div class="ex-num num-green">#6</div>
+      <div class="ex-title-block">
+        <div class="ex-name">Full Body Rotation w/ Dowel</div>
+        <div class="ex-equipment">Floor Models + Club or Dowel</div>
+      </div>
+      <div class="ex-sets">2×10 each</div>
+      <div class="ex-chevron">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-desc">Hold a club or dowel across your shoulders. Stand on floor models in golf stance. Rotate fully in both directions — slow, deliberate, end-range holds 3 seconds. Feel where the hip freedom wants to take the rotation. This is your slow-motion swing pattern drill built into the baseline.</div>
+      <div class="ex-benefits">
+        <span class="benefit-tag">Torso Mobility</span>
+        <span class="benefit-tag">Hip Mobility</span>
+        <span class="benefit-tag">Ankle Mobility</span>
+        <span class="benefit-tag">Low Back Stability</span>
+      </div>
+      <div class="ex-tip">The ribcage opener lives here. This is also the treestand archery shot pattern — both sports training simultaneously in one exercise.</div>
+    </div>
+  </div>
+
+  <!-- Ex 17 -->
+  <div class="ex-card">
+    <div class="ex-header" onclick="toggleEx(this)">
+      <div class="ex-num num-orange">#17</div>
+      <div class="ex-title-block">
+        <div class="ex-name">Shoulder ROM — Serratus Anterior</div>
+        <div class="ex-equipment">Handheld</div>
+      </div>
+      <div class="ex-sets">2×10 each</div>
+      <div class="ex-chevron">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-desc">Handheld in one hand. Slow overhead reach with resistance — take the shoulder through its full elevation range. Work both arms. At end range hold 3–5 seconds and breathe. This directly addresses the shoulder chain that 30 years of archery has loaded asymmetrically.</div>
+      <div class="ex-benefits">
+        <span class="benefit-tag">General Shoulder Mobility</span>
+        <span class="benefit-tag">Shoulder Elevation</span>
+        <span class="benefit-tag">Frozen Shoulder Reduction</span>
+        <span class="benefit-tag">Rotator Cuff</span>
+      </div>
+      <div class="ex-tip">Archery: this is the single most important baseline exercise for draw-side shoulder health. The serratus anterior is the muscle that keeps the shoulder blade from winging during a held draw.</div>
+    </div>
+  </div>
+
+  <!-- Ex 22 -->
+  <div class="ex-card">
+    <div class="ex-header" onclick="toggleEx(this)">
+      <div class="ex-num num-purple">#22</div>
+      <div class="ex-title-block">
+        <div class="ex-name">Lat Release</div>
+        <div class="ex-equipment">Handheld</div>
+      </div>
+      <div class="ex-sets">2×8 each</div>
+      <div class="ex-chevron">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-desc">Handheld. Cross-body pull and hold — reach across and down, feel the lat and the entire shoulder-to-hip fascial chain release. Hold 5 seconds at end range. This is the bookend exercise that closes the session — releasing everything that was activated and integrated above.</div>
+      <div class="ex-benefits">
+        <span class="benefit-tag">Low Back Tension Release</span>
+        <span class="benefit-tag">Shoulder Joint Mobility</span>
+        <span class="benefit-tag">Torso Mobility</span>
+        <span class="benefit-tag">Hip Mobility</span>
+      </div>
+      <div class="ex-tip">Forearm note: tight lats are a hidden driver of forearm and wrist tension. This exercise relieves the lat-forearm fascial chain indirectly. Often the wrist feels better after this than after any direct wrist work.</div>
+    </div>
+  </div>
+
+</div><!-- /baseline panel -->
+
+<!-- ══ WEEKLY PLAN PANEL ══ -->
+<div class="panel" id="panel-weekly">
+  <div class="section-head" style="margin-top:4px">
+    <div class="section-stripe" style="background:var(--blue)"></div>
+    <div>
+      <h2>Weekly Training Structure</h2>
+      <p>60% Golf · 40% Archery · Built around Dr. Joe's numbered system</p>
+    </div>
+  </div>
+
+  <!-- day cards -->
+  <div id="weeklyDays"></div>
+</div>
+
+<!-- ══ WRIST PANEL ══ -->
+<div class="panel" id="panel-wrist">
+  <div class="section-head" style="margin-top:4px">
+    <div class="section-stripe" style="background:var(--orange)"></div>
+    <div>
+      <h2>Wrist & Forearm Protocol</h2>
+      <p>Dr. Joe's Elbow Epicondylitis sequence · 3×/week · ~5 min</p>
+    </div>
+  </div>
+  <div class="dr-joe-note" style="margin-bottom:16px">
+    <strong>Protocol sequence:</strong> #3 → #19 → #20 → #17 → #22<br>
+    Exercises #19 and #20 require the handheld. Tight forearms in golf and archery are often caused by shoulder instability upstream — #3 and #21 reducing compensatory grip tension can relieve forearm load without touching the forearm directly.
+  </div>
+  <div id="wristExercises"></div>
+</div>
+
+<!-- ══ REFERENCE PANEL ══ -->
+<div class="panel" id="panel-reference">
+  <div class="section-head" style="margin-top:4px">
+    <div class="section-stripe" style="background:var(--purple)"></div>
+    <div>
+      <h2>All 27 Exercises — Quick Reference</h2>
+      <p>Dr. Joe LaCaze's complete numbered system</p>
+    </div>
+  </div>
+  <div class="ref-table" id="refTable"></div>
+</div>
+
+<script>
+// ── data ──────────────────────────────────────────────────────────────────────
+
+const allExercises = [
+  { num:1,  name:"Internal Hip Rotation",            equip:"Floor Models",           targets:"Hip Mobility & ROM · Low Back Stability · Pelvic Floor" },
+  { num:2,  name:"Multi-Plane Squat",                equip:"Floor Models",           targets:"Ankle Mobility · Knee Stability · Spine Stability" },
+  { num:3,  name:"External Shoulder Rotation",       equip:"Floor Models",           targets:"Shoulder Blade Stability · Shoulder Joint Mobility · Rotator Cuff" },
+  { num:4,  name:"External Shoulder Rotation w/ Pelvic Tucks", equip:"Floor Models", targets:"Pelvic Floor · Shoulder Blade Stability · Low Back Release" },
+  { num:5,  name:"Thoracic Mobility",                equip:"Floor Models",           targets:"Low Back Stability · Shoulder Blade Stability · Neck & Hip Mobility" },
+  { num:6,  name:"Full Body Rotation w/ Dowel",      equip:"Floor Models",           targets:"Torso · Hip · Ankle Mobility · Low Back Stability" },
+  { num:7,  name:"Pelvic Thrust",                    equip:"Floor Models",           targets:"Pelvic Floor Activation · Low Back Release · Hip ROM" },
+  { num:8,  name:"Hip Abduction & External Rotation",equip:"Floor Models + Theraband",targets:"Hip Activation & Strength · Knee Stability" },
+  { num:9,  name:"Internal Ankle Rotation",          equip:"Floor Models",           targets:"Ankle Mobility & Strength · Foot Stability" },
+  { num:10, name:"External Ankle Rotation",          equip:"Floor Models",           targets:"Ankle Mobility & Strength · Foot Stability" },
+  { num:11, name:"External Ankle Eccentric Contractions", equip:"Floor Models",      targets:"Ankle Stability · Sprain Reduction · Foot Strength" },
+  { num:12, name:"External Rotation of Deep Hip",    equip:"One Floor Model",        targets:"Hip Mobility · Low Back Tension Release · Hip Flexor" },
+  { num:13, name:"Full Body Counter Rotation",       equip:"Floor Models + Handheld",targets:"Full Body Joint & Tissue Activation · Tension Release" },
+  { num:14, name:"Hip Flexor Release",               equip:"One Floor Model + Handheld",targets:"Hip Flexor Mobility · Opposite Hip Stability · Thoracic Mobility" },
+  { num:15, name:"Lead Hip Resistance",              equip:"One Floor Model + Handheld",targets:"Lead Side Deceleration · Strong Post-Up · Hip & Knee Protection" },
+  { num:16, name:"Full Body Tissue Activation",      equip:"Floor Models + Handheld",targets:"Full Body Tension Release · Ankle/Hip/Torso/Shoulder Activation" },
+  { num:17, name:"Shoulder ROM — Serratus Anterior", equip:"Handheld",               targets:"General Shoulder Mobility · Elevation · Frozen Shoulder & Rotator Cuff" },
+  { num:18, name:"Rotation Activation — Hip/Torso/Shoulder", equip:"Handheld",       targets:"Hip · Spine · Shoulder Mobility · Low Back Stability" },
+  { num:19, name:"Forearm, Wrist, Hand",             equip:"Handheld",               targets:"Forearm & Wrist Strength · Mobility · Elbow & Hand Stability" },
+  { num:20, name:"Elbow Tendon Release",             equip:"Handheld",               targets:"Elbow Tendinitis Reduction · UCL Protection & Rehab" },
+  { num:21, name:"Posterior Shoulder Activation",    equip:"Handheld",               targets:"Outward Shoulder Activation · Rotator Cuff · Shoulder Blade Stability" },
+  { num:22, name:"Lat Release",                      equip:"Handheld",               targets:"Low Back Release · Shoulder Mobility · Torso & Hip Mobility" },
+  { num:23, name:"Full Body Rotational Endurance",   equip:"Handheld",               targets:"Joint & Tissue Rotational Endurance" },
+  { num:24, name:"Globe — Putting it Together",      equip:"Globe attachment",       targets:"Full Integration" },
+  { num:25, name:"Globe — Forearms, Wrist, Hands, Elbow", equip:"Globe attachment",  targets:"Forearm Flexors & Extensors · Elbow Tendinitis · Full Forearm Rotation" },
+  { num:26, name:"Globe — Loading the Backside",     equip:"Globe attachment",       targets:"Posterior Chain Loading" },
+  { num:27, name:"Globe — Training Down and Through",equip:"Globe attachment",       targets:"Down & Through Muscles and Positions" },
+];
+
+const weekDays = [
+  { day:"Monday",   emoji:"⛳", tag:"Golf · Deep", color:"var(--blue)",   duration:"20–30 min",
+    focus:"Hip Rotation & Weight Transfer — the engine of your golf swing.",
+    exercises:["#1 Internal Hip Rotation","#2 Multi-Plane Squat","#6 Full Body Rotation w/ Dowel","#9 Internal Ankle Rotation"],
+    protocol:"Golf Backswing/Through: 1, 2, 5, 6, 8, 22" },
+  { day:"Tuesday",  emoji:"🎯", tag:"Archery · Quick", color:"var(--orange)", duration:"10 min",
+    focus:"Scapular Stability & Rotator Cuff — the draw-and-hold muscles.",
+    exercises:["#21 Posterior Shoulder Activation","#3 External Shoulder Rotation","#17 Shoulder ROM"],
+    protocol:"Shoulder Plane: 17, 21, 22 · Rotator Cuff: 3, 5, 17, 21, 22" },
+  { day:"Wednesday",emoji:"⚡", tag:"Combo · Deep", color:"var(--green)",  duration:"20–30 min",
+    focus:"Thoracic Spine & Full-Body Connection — where golf and archery converge.",
+    exercises:["#5 Thoracic Mobility","#13 Full Body Counter Rotation","#14 Hip Flexor Release","#15 Lead Hip Resistance","#22 Lat Release"],
+    protocol:"Increasing Pivot: 5, 6, 13, 14 · Upper/Lower Dissociation: 13" },
+  { day:"Thursday", emoji:"🌊", tag:"Active Rest", color:"var(--muted)",   duration:"5–10 min",
+    focus:"Consolidate Mon–Wed gains. Light movement only or skip entirely.",
+    exercises:["#1 Gentle Hip Circles","#17 Shoulder Pendulum (no resistance)"],
+    protocol:"General Full Body Myofascial Balance: 1, 2, 4, 5, 8, 22" },
+  { day:"Friday",   emoji:"⛳", tag:"Golf · Deep", color:"var(--blue)",   duration:"20–30 min",
+    focus:"Lower Body Stability & Swing Grooming — pre-weekend investment.",
+    exercises:["#1 Internal Hip Rotation (loaded)","#8 Hip Abduction & External Rotation","#6 Full Body Rotation (slow-mo with club)","#16 Full Body Tissue Activation","#12 Deep Hip External Rotation"],
+    protocol:"Trail Hip Backswing: 1, 2, 4, 15, 13 · Lead Hip Ground Force: 1, 2, 4, 8" },
+  { day:"Saturday", emoji:"🎯", tag:"Archery · Quick", color:"var(--orange)", duration:"10 min",
+    focus:"Shoulder Endurance & Bilateral Balance — draw-side vs bow-side asymmetry.",
+    exercises:["#21 Posterior Shoulder — both sides","#3 Rotator Cuff Endurance Holds","#17 Shoulder Capsule Release"],
+    protocol:"Acceleration & Deceleration: 1, 2, 5, 6, 7, 15, 17, 19, 23" },
+  { day:"Sunday",   emoji:"🔋", tag:"Full Rest", color:"var(--muted)",    duration:"Off or 5 min",
+    focus:"Rest IS training. Body consolidates mobility gains during recovery.",
+    exercises:["Optional: gentle #1 + #3 circles only"],
+    protocol:"If needed: General Myofascial Balance 1, 2, 4, 5, 8, 22" },
+];
+
+const wristExs = [
+  { num:"#3",  name:"External Shoulder Rotation", equip:"Floor Models",
+    desc:"Arms out, rotate externally against floor model resistance. Full end-range hold 5 sec. Reduces compensatory gripping that overloads the forearm chain.",
+    why:"Shoulder instability upstream is a hidden driver of forearm tension. Fix the source, not just the symptom.", sets:"2×10" },
+  { num:"#19", name:"Forearm, Wrist, Hand", equip:"Handheld ← required",
+    desc:"Hold handheld, perform slow pronation/supination and wrist circles through full range. Hold 10–15 sec at end range each direction. This is the primary forearm exercise.",
+    why:"Direct forearm/wrist strength and mobility. Elbow and hand stability.", sets:"2×12 each" },
+  { num:"#20", name:"Elbow Tendon Release", equip:"Handheld ← required",
+    desc:"Slow eccentric resistance through elbow flexion/extension. Hold tension at end range 5 sec. Focus on the eccentric (lengthening) phase — that's where tendon health is built.",
+    why:"Elbow tendinitis reduction. UCL protection. Tendon health for golf and archery both.", sets:"2×8 each" },
+  { num:"#17", name:"Shoulder ROM — Serratus Anterior", equip:"Handheld",
+    desc:"Slow overhead reach with resistance. Takes load off the forearm chain when the shoulder moves freely. Work both arms.",
+    why:"Reduces the compensatory tension that travels from restricted shoulder to forearm.", sets:"2×10 each" },
+  { num:"#22", name:"Lat Release", equip:"Handheld",
+    desc:"Cross-body pull and hold. Releases the lat-forearm fascial chain that contributes to forearm tightness. Often the wrist feels better after this than after direct wrist work.",
+    why:"Low back and shoulder tension release. The lat connects shoulder to hip — when it releases, the forearm chain decompresses.", sets:"2×8 each" },
+];
+
+// ── build weekly days ──────────────────────────────────────────────────────────
+function buildWeekly() {
+  const container = document.getElementById('weeklyDays');
+  weekDays.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'ex-card';
+    card.style.marginBottom = '12px';
+    card.innerHTML = `
+      <div class="ex-header" onclick="toggleEx(this)" style="cursor:pointer">
+        <div style="font-size:1.4rem;flex-shrink:0">${d.emoji}</div>
+        <div class="ex-title-block">
+          <div class="ex-name">${d.day}</div>
+          <div class="ex-equipment">${d.tag} · ${d.duration}</div>
+        </div>
+        <div class="ex-chevron">▼</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-desc">${d.focus}</div>
+        <div style="margin:10px 0 6px;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Exercises</div>
+        ${d.exercises.map(e => `<div style="font-size:0.82rem;color:#c0c8d8;padding:3px 0;border-bottom:1px solid var(--border)">${e}</div>`).join('')}
+        <div class="ex-tip" style="margin-top:10px"><strong style="color:var(--blue)">Dr. Joe Protocol:</strong> ${d.protocol}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── build wrist exercises ──────────────────────────────────────────────────────
+function buildWrist() {
+  const container = document.getElementById('wristExercises');
+  wristExs.forEach(ex => {
+    const card = document.createElement('div');
+    card.className = 'ex-card';
+    card.style.marginBottom = '12px';
+    card.innerHTML = `
+      <div class="ex-header" onclick="toggleEx(this)">
+        <div class="ex-num num-orange" style="font-size:0.75rem">${ex.num}</div>
+        <div class="ex-title-block">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-equipment">${ex.equip}</div>
+        </div>
+        <div class="ex-sets">${ex.sets}</div>
+        <div class="ex-chevron">▼</div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-desc">${ex.desc}</div>
+        <div class="ex-tip"><strong style="color:var(--orange)">Why it helps your forearms:</strong> ${ex.why}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── build reference table ──────────────────────────────────────────────────────
+function buildReference() {
+  const container = document.getElementById('refTable');
+  allExercises.forEach(ex => {
+    const row = document.createElement('div');
+    row.className = 'ref-row';
+    const isGlobe = ex.num >= 24;
+    row.innerHTML = `
+      <div class="ref-num">${ex.num}</div>
+      <div style="flex:1">
+        <div class="ref-name" style="${isGlobe ? 'color:var(--purple)' : ''}">${ex.name}</div>
+        <div class="ref-target">${ex.equip}</div>
+      </div>
+      <div style="flex:2;font-size:0.72rem;color:var(--muted);text-align:right;padding-left:8px">${ex.targets}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// ── timer ──────────────────────────────────────────────────────────────────────
+const baselineSequence = [
+  { exName:"Exercise #7 — Pelvic Thrust",           setLabel:"Set 1 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #7 — Pelvic Thrust",           setLabel:"Set 2 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #2 — Multi-Plane Squat",       setLabel:"Set 1 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #2 — Multi-Plane Squat",       setLabel:"Set 2 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #6 — Full Body Rotation",      setLabel:"Set 1 of 2", dur:40 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #6 — Full Body Rotation",      setLabel:"Set 2 of 2", dur:40 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #17 — Shoulder ROM",           setLabel:"Set 1 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #17 — Shoulder ROM",           setLabel:"Set 2 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #22 — Lat Release",            setLabel:"Set 1 of 2", dur:30 },
+  { exName:"Rest",                                   setLabel:"",           dur:15, isRest:true },
+  { exName:"Exercise #22 — Lat Release",            setLabel:"Set 2 of 2", dur:30 },
+];
+
+let stepIdx = 0, timeLeft = 0, timerInterval = null, running = false;
+
+function buildDots() {
+  const c = document.getElementById('stepDots');
+  c.innerHTML = '';
+  // Show 5 exercise dots (not rest steps)
+  const exSteps = baselineSequence.filter(s => !s.isRest);
+  exSteps.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === 0 ? ' current' : '');
+    d.id = 'dot-' + i;
+    c.appendChild(d);
+  });
+}
+
+function updateDots() {
+  const exIndices = baselineSequence.reduce((acc, s, i) => { if (!s.isRest) acc.push(i); return acc; }, []);
+  const currentExIdx = exIndices.findLastIndex(i => i <= stepIdx);
+  exIndices.forEach((_, i) => {
+    const d = document.getElementById('dot-' + i);
+    if (!d) return;
+    d.className = 'step-dot' + (i < currentExIdx ? ' done' : i === currentExIdx ? ' current' : '');
+  });
+}
+
+function loadStep() {
+  if (stepIdx >= baselineSequence.length) {
+    document.getElementById('timerWidget').style.display = 'none';
+    document.getElementById('completeScreen').classList.add('show');
+    return;
+  }
+  const s = baselineSequence[stepIdx];
+  timeLeft = s.dur;
+  document.getElementById('timerDisplay').textContent = formatTime(timeLeft);
+  document.getElementById('timerExName').textContent = s.exName;
+  document.getElementById('timerExNum').textContent = s.setLabel || (s.isRest ? 'Rest — breathe, reset' : '');
+  document.getElementById('timerBar').style.width = '100%';
+  document.getElementById('timerDisplay').style.color = s.isRest ? 'var(--green)' : 'var(--gold)';
+  updateDots();
+}
+
+function formatTime(s) { return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+function tick() {
+  timeLeft--;
+  const s = baselineSequence[stepIdx];
+  document.getElementById('timerDisplay').textContent = formatTime(timeLeft);
+  document.getElementById('timerBar').style.width = ((timeLeft / s.dur) * 100) + '%';
+  if (timeLeft <= 0) { stepIdx++; loadStep(); }
+}
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(timerInterval); running = false;
+    document.getElementById('timerBtn').textContent = '▶ Resume';
+  } else {
+    running = true;
+    document.getElementById('timerBtn').textContent = '⏸ Pause';
+    timerInterval = setInterval(tick, 1000);
+  }
+}
+
+function skipTimer() { clearInterval(timerInterval); running = false; stepIdx++; loadStep(); document.getElementById('timerBtn').textContent = '▶ Start'; }
+
+function resetTimer() {
+  clearInterval(timerInterval); running = false; stepIdx = 0;
+  document.getElementById('timerWidget').style.display = 'block';
+  document.getElementById('completeScreen').classList.remove('show');
+  document.getElementById('timerBtn').textContent = '▶ Start';
+  loadStep();
+}
+
+// ── tab switching ──────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['baseline','weekly','wrist','reference'][i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── exercise accordion ──────────────────────────────────────────────────────────
+function toggleEx(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.ex-chevron');
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  if (chev) chev.classList.toggle('open', !open);
+}
+
+// ── init ──────────────────────────────────────────────────────────────────────
+buildDots();
+loadStep();
+buildWeekly();
+buildWrist();
+buildReference();
+</script>
+</body>
+</html>
